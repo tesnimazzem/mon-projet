@@ -1,0 +1,33 @@
+pipeline {
+  agent any
+  options { timestamps() }
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+    stage('Build') {
+      steps {
+        bat 'echo === Build : préparation du projet ==='
+        bat 'dir'
+      }
+    }
+    stage('Test') {
+  steps {
+    bat 'echo === Test avec grep ==='
+    bat '"C:\\Program Files\\Git\\usr\\bin\\grep.exe" "Bienvenue" index.html'
+    bat '"C:\\Program Files\\Git\\usr\\bin\\grep.exe" "font-family" style.css'
+  }
+}
+    stage('Archive') {
+      steps {
+        archiveArtifacts artifacts: '*.html, *.css', fingerprint: true
+      }
+    }
+  }
+  post {
+    success { echo 'Build OK' }
+    failure { echo 'Build KO' }
+  }
+}
